@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" href="Core/Assets/Images/favicon.ico"/>
+    <link rel="apple-touch-icon" sizes="180x180" href="Core/Assets/Images/apple-icon-180x180.png"/>
+    <title>Panel Estado Servicios</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+</head>
+<body>
+<div class="container-fluid py-5">
+    <div class="d-flex justify-content-center pb-3">
+        <h1>{{ fsc.empresa.nombrecorto }}</h1>
+    </div>
+
+    <div x-data="app" class="d-flex flex-column gap-2">
+        {# usamos el truco de :key="servicio.id + '-' + servicio.estado.nombre" agregar el estado #}
+        {# para que cada vez cambia el estado forzamos la recreación del nodo y se ejecute la animación #}
+        <template x-for="servicio in servicios" :key="servicio.id + '-' + servicio.estado.nombre">
+            <div :class="claseEstado(servicio.estado.color)" class="alert my-0" role="alert">
+                <div class="row">
+                    <div class="col-3"><strong><span x-text="servicio.codigo"></span></strong></div>
+                    <div class="col-3"><strong><span x-text="servicio.maquina?.nombre"></span></strong></div>
+                    <div class="col-3"><strong><span x-text="servicio.maquina?.numserie"></span></strong></div>
+                    <div class="col-3"><strong><span x-text="servicio.estado.nombre"></span></strong></div>
+                </div>
+            </div>
+        </template>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.15.8/dist/cdn.min.js"></script>
+<script>
+    const app = {
+        servicios: [],
+        async init() {
+            const data = await this.fetchServicios();
+            if (data.success) {
+                this.servicios = data.servicios;
+            }
+
+            setInterval(async () => {
+                const data = await this.fetchServicios();
+                if (data.success) {
+                    this.servicios = data.servicios;
+                }
+            }, {{ fsc.interval }});
+        },
+        fetchServicios: async function () {
+            const url = "{{ fsc.url() }}";
+
+            let data = new FormData();
+            data.append('action', 'get-servicios');
+
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: data
+            });
+            return response.json();
+        },
+        claseEstado: function (colorEstado) {
+            return 'alert-' + colorEstado + ' animate__animated animate__flash animate__slower animate__repeat-2'
+        }
+    };
+</script>
+</body>
+</html>

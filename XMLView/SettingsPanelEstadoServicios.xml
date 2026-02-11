@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<view>
+    <columns>
+        <group name="data" numcolumns="12">
+            <column name="name" display="none" order="0">
+                <widget type="text" fieldname="name" readonly="true" required="true" />
+            </column>
+
+            <column name="estadosmostrarpanel" title="statesdisplaypanel" order="100">
+                <widget type="select" fieldname="estadosmostrarpanel" multiple="true" required="true">
+                    <values source="serviciosat_estados" fieldcode="id" fieldtitle="nombre"/>
+                </widget>
+            </column>
+
+            <column name="tiemporefrescopagina" title="refreshtime" description="refreshtimedescription" order="110">
+                <widget type="number" decimal="0" min="0" step="1" fieldname="tiemporefrescopagina" required="true"/>
+            </column>
+        </group>
+    </columns>
+</view>

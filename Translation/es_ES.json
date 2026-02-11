@@ -1,0 +1,7 @@
+{
+  "panelestadoservicios": "Servicios (PANEL)",
+  "refreshtime": "Tiempo para refrescar los datos",
+  "refreshtimedescription": "Frecuencia de actualización de datos en el panel. (EN MINUTOS).",
+  "services-panel": "Servicios (PANEL)",
+  "statesdisplaypanel": "Estados que se mostrarán en el panel"
+}
