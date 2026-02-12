@@ -6,6 +6,7 @@
 namespace FacturaScripts\Plugins\PanelEstadoServicios\Controller;
 
 use FacturaScripts\Core\Base\Controller;
+use FacturaScripts\Core\KernelException;
 use FacturaScripts\Core\Tools;
 use FacturaScripts\Core\Where;
 use FacturaScripts\Dinamic\Model\MaquinaAT;
@@ -25,7 +26,10 @@ class PanelEstadoServicios extends Controller
         return $data;
     }
 
-    public function privateCore(&$response, $user, $permissions)
+    /**
+     * @throws KernelException
+     */
+    public function privateCore(&$response, $user, $permissions): void
     {
         parent::privateCore($response, $user, $permissions);
 
@@ -106,11 +110,7 @@ class PanelEstadoServicios extends Controller
         $servicios = ServicioAT::all($where);
 
         return array_map(function ($servicio) use ($maquinasIndexadas, $estadosIndexados) {
-            $maquina = null;
-            if (isset($maquinasIndexadas[$servicio->idmaquina])) {
-                $maquina = $maquinasIndexadas[$servicio->idmaquina];
-            }
-
+            $maquina = $maquinasIndexadas[$servicio->idmaquina] ?? null;
             $estado = $estadosIndexados[$servicio->idestado] ?? null;
 
             return [
