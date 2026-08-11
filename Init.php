@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright (c) 2025 Antonio José Palma Silva <desarrolloweb@antoniojosepalma.es>
  */
@@ -12,8 +13,8 @@ class Init extends InitClass
 {
     public function init(): void
     {
-        $minutos = Tools::settings('panelestadoservicios', 'tiemporefrescopagina');
-        if(empty($minutos)) {
+        $minutos = (int) Tools::settings('panelestadoservicios', 'tiemporefrescopagina');
+        if ($minutos < 1) {
             Tools::settingsSet('panelestadoservicios', 'tiemporefrescopagina', 1);
             Tools::settingsSave();
         }

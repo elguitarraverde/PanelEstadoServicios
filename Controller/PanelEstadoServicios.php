@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright (c) 2025 Antonio José Palma Silva <desarrolloweb@antoniojosepalma.es>
  */
@@ -7,11 +8,12 @@ namespace FacturaScripts\Plugins\PanelEstadoServicios\Controller;
 
 use FacturaScripts\Core\Base\Controller;
 use FacturaScripts\Core\KernelException;
+use FacturaScripts\Core\Request;
 use FacturaScripts\Core\Tools;
 use FacturaScripts\Core\Where;
+use FacturaScripts\Dinamic\Model\EstadoAT;
 use FacturaScripts\Dinamic\Model\MaquinaAT;
 use FacturaScripts\Dinamic\Model\ServicioAT;
-use FacturaScripts\Plugins\Servicios\Model\EstadoAT;
 
 class PanelEstadoServicios extends Controller
 {
@@ -33,11 +35,11 @@ class PanelEstadoServicios extends Controller
     {
         parent::privateCore($response, $user, $permissions);
 
-        $minutos = Tools::settings('panelestadoservicios', 'tiemporefrescopagina', 1);
+        $minutos = (int) Tools::settings('panelestadoservicios', 'tiemporefrescopagina', 1);
         $this->interval = $minutos * 60 * 1000;
 
         $action = $this->request->request->get('action');
-        if ($this->request->method() === 'POST' && $this->isAjax() && $action === 'get-servicios') {
+        if (Request::METHOD_POST === $this->request->method() && $this->isAjax() && $action === 'get-servicios') {
             $this->setTemplate(false);
 
             $maquinasIndexadas = $this->getMaquinasIndexadas();
@@ -57,7 +59,7 @@ class PanelEstadoServicios extends Controller
     }
 
     /**
-     * @return MaquinaAT[]
+     * @return array<int|string, array{id: mixed, nombre: string, numserie: string}>
      */
     private function getMaquinasIndexadas(): array
     {
@@ -75,7 +77,7 @@ class PanelEstadoServicios extends Controller
     }
 
     /**
-     * @return EstadoAT[]
+     * @return array<int, array{nombre: string, color: string}>
      */
     private function getEstadosIndexados(): array
     {
@@ -92,17 +94,17 @@ class PanelEstadoServicios extends Controller
     }
 
     /**
-     * @param $maquinasIndexadas
-     * @param $estadosIndexados
+     * @param array<int|string, array{id: mixed, nombre: string, numserie: string}> $maquinasIndexadas
+     * @param array<int, array{nombre: string, color: string}> $estadosIndexados
      *
-     * @return array{id: int, codigo: string, maquina: array|null, estado: array}
+     * @return list<array{id: mixed, codigo: mixed, maquina: array{id: mixed, nombre: string, numserie: string}|null, estado: array{nombre: string, color: string}}>
      */
     private function getServiciosArrayResponse($maquinasIndexadas, $estadosIndexados): array
     {
         $where = [];
 
-        $idsEstados = Tools::settings('panelestadoservicios', 'estadosmostrarpanel');
-        if (!empty($idsEstados)) {
+        $idsEstados = (string) Tools::settings('panelestadoservicios', 'estadosmostrarpanel');
+        if ('' !== $idsEstados) {
             $idsEstados = explode(',', $idsEstados);
             $where[] = Where::in('idestado', $idsEstados);
         }
