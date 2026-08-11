@@ -1,0 +1,22 @@
+includes:
+    - vendor/phpstan/phpstan-strict-rules/rules.neon
+
+parameters:
+    level: 5
+    phpVersion: 80100
+    paths:
+        - .
+    bootstrapFiles:
+        - ../../vendor/autoload.php
+    scanDirectories:
+        - ../../Dinamic
+    excludePaths:
+        analyse:
+            - vendor/*
+            - node_modules/*
+            - cache/*
+            - tmp/*
+            - var/*
+            - releases/*
+    ignoreErrors:
+        - '#Call to static method all\(\) on an unknown class FacturaScripts\\Dinamic\\Model\\(MaquinaAT|EstadoAT|ServicioAT)\.#'

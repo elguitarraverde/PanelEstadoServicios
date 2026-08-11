@@ -1,0 +1,40 @@
+{
+  "name": "facturascripts/panel-estado-servicios",
+  "type": "project",
+  "license": "LGPL-3.0-or-later",
+  "config": {
+    "platform": {
+      "php": "8.1"
+    }
+  },
+  "require": {
+    "php": ">=8.1"
+  },
+  "require-dev": {
+    "friendsofphp/php-cs-fixer": "^3.68",
+    "rector/rector": "^2.0",
+    "phpstan/phpstan-strict-rules": "^2.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "FacturaScripts\\Plugins\\PanelEstadoServicios\\": "./"
+    }
+  },
+  "scripts": {
+    "phpstan": "phpstan analyse --configuration=phpstan.neon",
+    "cs:check": "php-cs-fixer fix --dry-run --diff",
+    "cs:fix": "php-cs-fixer fix",
+    "rector:check": "rector process --dry-run",
+    "rector:fix": "rector process",
+    "quality": [
+      "@cs:check",
+      "@rector:check",
+      "@phpstan"
+    ],
+    "quality:fix": [
+      "@cs:fix",
+      "@rector:fix",
+      "@phpstan"
+    ]
+  }
+}
